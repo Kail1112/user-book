@@ -4,5 +4,6 @@ export default {
     if (id !== -1) {
       return state.contacts.find(contact => contact.id === id * 1)
     } else return undefined
-  }
+  },
+  GET_CUR_ID_USER: state => state.idUser
 }

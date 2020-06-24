@@ -4,10 +4,11 @@ export default {
   name: 'TheUserList',
   functional: true,
   props: {
-    users: { type: Array, default: () => ([]) }
+    users: { type: Array, default: () => ([]) },
+    root: { type: Object, default: () => ({}) }
   },
   render (h, context) {
-    const {users} = context.props
-    return h('b-card-group', { props: { deck: true } }, users.map(user => h(UserCard, { props: user })))
+    const {users, root} = context.props
+    return h('b-row', users.map(user => h(UserCard, {props: {...user, root}})))
   }
 }

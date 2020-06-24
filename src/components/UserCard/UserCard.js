@@ -9,10 +9,11 @@ export default {
     lastName: { type: String, default: '' },
     phones: { type: Array, default: () => ([]) },
     address: { type: Array, default: () => ([]) },
-    emails: { type: Array, default: () => ([]) }
+    emails: { type: Array, default: () => ([]) },
+    root: { type: Object, default: () => ({}) }
   },
   render (h, context) {
-    const {id, firstName, lastName, phones, address, emails} = context.props
+    const {id, firstName, lastName, phones, address, emails, root} = context.props
     // Список email адресов
     const emailsElement = emails.length > 0 ? h(UserCardField, { props: { data: emails, title: 'Email\'s:' } }) : null
     // Список адресов
@@ -20,11 +21,11 @@ export default {
     // Список номеров телефона
     const phonesElement = phones.length > 0 ? h(UserCardField, { props: { data: phones, title: 'Номера:' } }) : null
     // render
-    return h('b-card', { class: 'mb-4' }, [
+    return h('b-col', { class: 'mb-4', props: { cols: 12, md: '6' } }, [
       h('b-card-header', [
         h('router-link', { props: { to: { path: `/card/${id}` } } }, [ h('h5', { class: 'd-inline-block mt-2 mb-2' }, `${firstName} ${lastName}`) ])
       ]),
-      h('b-list-group', { class: 'mb-2' }, [
+      h('b-list-group', [
         emailsElement,
         addressElement,
         phonesElement
@@ -35,7 +36,13 @@ export default {
             h('b-button', { class: 'w-100 mt-2 mb-2', props: { variant: 'outline-success', to: `/card/${id}` } }, 'Редактировать')
           ]),
           h('b-col', { props: { cols: '12' } }, [
-            h('b-button', { class: 'w-100 mt-2 mb-2', props: { variant: 'outline-danger' } }, 'Удалить')
+            h('b-button', {
+              class: 'w-100 mt-2 mb-2',
+              props: { variant: 'outline-danger' },
+              on: {
+                click: () => root.$store.dispatch('deleteUser', id)
+              }
+            }, 'Удалить')
           ])
         ])
       ])

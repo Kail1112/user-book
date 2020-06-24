@@ -1,4 +1,4 @@
-import InputDetail from '../components/InputDetail'
+import EditUser from '../components/EditUser'
 
 export default {
   name: 'CardPageDetail',
@@ -12,47 +12,61 @@ export default {
     if (!result) this.$router.push('/')
   },
   render (h) {
-    const {address, emails, firstName, id, lastName, phones} = this.info
-    // Редактирование email'ов
-    const editEmails = h('b-card', { class: 'mb-4' }, [
-      h('b-card-header', 'Email адреса:'),
-      h('b-list-group', [
-        h('b-list-group-item', [
-          h(InputDetail, {
-            props: {
-              fieldName: 'Добавить новый email',
-              placeholder: 'email',
-              userId: id,
-              fieldKey: 'email',
-              type: 'email',
-              onAdd: (res) => {
-                console.log(res)
-              }
-            }
-          })
-        ]),
-        ...emails.map((email, index) => {
-          return h('b-list-group-item', [
-            h(InputDetail, {
-              props: {
-                startValue: email,
-                userId: id,
-                indexField: index,
-                fieldKey: 'emails',
-                type: 'email',
-                onDelete: (res) => {
-                  console.log(res)
-                }
-              }
-            })
-          ])
-        })
-      ]),
-    ])
+    const component = this
+    const {id, firstName, lastName, emails, phones, address} = component.info
+    // Список эвентов
+    const events = {
+      onAdd: (data) => component.$root.$store.dispatch('addContactInfo', data),
+      onDelete: (data) => component.$root.$store.dispatch('deleteContactInfo', data),
+      onSave: (data) => component.$root.$store.dispatch('editContact', data)
+    }
+    // Элемент редактирования email'ов
+    const emailsEditElement = h(EditUser, {
+      props: {
+        title: 'Email адреса:',
+        fieldName: 'Добавить новый email',
+        placeholder: 'email',
+        userId: id,
+        fieldKey: 'emails',
+        type: 'email',
+        events,
+        data: emails
+      }
+    })
+    // Элемент редактирования номеров телефона
+    const phonesEditElement = h(EditUser, {
+      props: {
+        title: 'Номера телефонов:',
+        fieldName: 'Добавить новый номер телефона:',
+        placeholder: 'Номер телефона',
+        userId: id,
+        fieldKey: 'phones',
+        type: 'text',
+        events,
+        data: phones,
+        pattern: '(998)\\d{2}\\s\\d{3}\\-\\d{2}\\-\\d{2}'
+      }
+    })
+    // Элемент редактирования адресов
+    const addressEditElement = h(EditUser, {
+      props: {
+        title: 'Адреса:',
+        fieldName: 'Добавить новый адрес:',
+        placeholder: 'Адрес',
+        userId: id,
+        fieldKey: 'address',
+        type: 'text',
+        events,
+        data: address,
+        pattern: '.{1,}'
+      }
+    })
     // render
     return h('b-container', { class: 'mt-5 mb-5' }, [
       h('h2', { class: 'mb-4' }, `Пользователь: ${firstName} ${lastName}`),
-      editEmails
+      emailsEditElement,
+      phonesEditElement,
+      addressEditElement
     ])
   }
 }

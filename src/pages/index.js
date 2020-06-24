@@ -23,9 +23,11 @@ export default {
   },
   render (h) {
     const {users} = this
+    const root = this.$root
     return h('b-container', { class: 'mb-5' }, [
       h(TheFind, { props: { onKeyUp: this.setSearchValue } }),
-      h(TheUserList, { props: { users } })
+      h('b-button', { class: 'w-100 mb-5', props: { variant: 'outline-success', to: '/user-add' } }, 'Добавить нового пользователя'),
+      h(TheUserList, { props: { users, root } })
     ])
   }
 }
